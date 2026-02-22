@@ -3,9 +3,11 @@ import java.util.*;
 public class CafeteriaSystem {
     private final Map<String, MenuItem> menu = new LinkedHashMap<>();
     private final InvoiceRepository store;
+    private final TaxPolicy taxPolicy;
 
-    public CafeteriaSystem(InvoiceRepository store){
+    public CafeteriaSystem(InvoiceRepository store, TaxPolicy taxPolicy){
         this.store = store;
+        this.taxPolicy = taxPolicy;
     }
     
     private int invoiceSeq = 1000;
@@ -21,7 +23,7 @@ public class CafeteriaSystem {
         double subtotal = price.getSubtotal(lines, menu);
 
         // tax
-        double taxPct = TaxRules.taxPercent(customerType);
+        double taxPct = taxPolicy.taxPercent(customerType);
         TaxCalculator t = new TaxCalculator();
         double tax = t.getTax(subtotal, taxPct);
 
